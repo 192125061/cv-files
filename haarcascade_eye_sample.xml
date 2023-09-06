@@ -1,0 +1,627 @@
+import cv2
+import numpy as np
+path = "E:/computer_vision/test.png"
+img = cv2.imread(path)
+imgGray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+cv2.imshow("GrayScale",imgGray)
+cv2.waitKey(0)
+
+import cv2
+import numpy as np
+path = "E:/computer_vision/test.png"
+img = cv2.imread(path)
+imgGray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+imgBlur = cv2.GaussianBlur(img,(7,7),10) #10 is blur value
+cv2.imshow("GrayScale",imgBlur)
+cv2.waitKey(0)
+
+import cv2
+import numpy as np
+path = "E:/computer_vision/test3.png"
+img = cv2.imread(path)
+imgGray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+imgBlur = cv2.GaussianBlur(img,(7,7),10) #10 is blur value
+imgCanny = cv2.Canny(imgBlur,100,200)
+cv2.imshow("GrayScale",imgCanny)
+cv2.waitKey(0)
+
+import cv2
+import numpy as np
+kernel = np.ones((5,5),np.uint8)
+path = "E:/computer_vision/test.png"
+img = cv2.imread(path)
+imgGray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+imgBlur = cv2.GaussianBlur(img,(7,7),10) #10 is blur value
+imgCanny = cv2.Canny(imgBlur,100,200)
+imgDilation = cv2.dilate(imgCanny,kernel,iterations = 10)
+imgEroded = cv2.erode(imgDilation,kernel,iterations=2)
+#cv2.imshow("GrayScale",imgDilation)
+cv2.imshow("GrayScale",imgEroded)
+
+cv2.waitKey(0)
+
+import cv2
+import numpy as np
+kernel = np.ones((5,5),np.uint8)
+img = cv2.imread("E:/computer_vision/test.png")
+img = cv2.resize(img,(600,600))
+cv2.imshow("image",img)
+cv2.waitKey(0)
+
+import numpy as np
+import cv2
+from matplotlib import pyplot as plt
+
+path = "E:/computer_vision/shapes.png"
+img = cv2.imread(path)
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# Harris corner detection
+corner_response = cv2.cornerHarris(gray, blockSize=2, ksize=3, k=0.04)
+corner_response = cv2.dilate(corner_response, None)
+
+# Threshold for corner detection
+threshold = 0.01 * corner_response.max()
+corner_image = np.copy(img)
+corner_image[corner_response > threshold] = [0, 0, 255]  # Highlight corners in red
+
+plt.imshow(cv2.cvtColor(corner_image, cv2.COLOR_BGR2RGB))
+plt.show()
+
+import cv2
+path ="E:/computer_vision/test.png"
+src = cv2.imread(path)
+window_name = 'Image'
+image = cv2.rotate(src, cv2.ROTATE_180)
+cv2.imshow(window_name, image)
+cv2.waitKey(0)
+
+import cv2
+path = "E:/computer_vision/test.png"
+src = cv2.imread(path)
+window_name = 'Image'
+image = cv2.rotate(src, cv2.ROTATE_90_COUNTERCLOCKWISE)
+# Displaying the image
+cv2.imshow(window_name, image)
+cv2.waitKey(0)
+
+import cv2
+import numpy as np
+path = "E:/computer_vision/test.png"
+image = cv2.imread(path)
+img2 = "E:/computer_vision/test3.png"
+print(image.shape) # Print image shape
+cv2.imshow("original", image)
+imageCopy = image.copy()
+cv2.circle(imageCopy, (100, 100), 30, (255, 0, 0), -1)
+cv2.imshow('image', image)
+cv2.imshow('image copy', imageCopy)
+cropped_image = image[80:280, 150:330]
+cv2.imshow("cropped", cropped_image)
+cv2.imwrite("Cropped Image.jpg", cropped_image)
+dst = cv2.addWeighted(image, 0.5, img2, 0.7, 0)
+img_arr = np.hstack((image, img2))
+cv2.imshow('Input Images',img_arr)
+cv2.imshow('Blended Image',dst)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+import cv2
+import numpy as np
+# Read the image
+image_path = "E:/computer_vision/face3.jpg"
+img = cv2.imread(image_path)
+# Convert the image to grayscale
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+# Detect faces in the image
+faces = cv2.CascadeClassifier('haarcascade_frontalface_alt.xml').detectMultiScale(gray, 1.3, 5)
+eyes = cv2.CascadeClassifier('haarcascade_eye.xml').detectMultiScale(gray,1.2,5)
+# Draw a rectangle around each face
+for (x, y, w, h) in faces:
+    cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 3)
+
+"""for (x,y,w,h) in eyes:
+    cv2.rectangle(img, (x,y), (x + w, y + h), (0, 255, 0), 2)"""
+# Show the image
+cv2.imshow('Image', img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
+import numpy as np
+import cv2
+from matplotlib import pyplot as plt
+
+path = "E:/computer_vision/shapes.png"
+img = cv2.imread(path)
+
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+corners = cv2.goodFeaturesToTrack(gray, 27, 0.01, 10)
+corners = np.int0(corners)
+
+for i in corners:
+	x, y = i.ravel()
+	cv2.circle(img, (x, y), 3, 255, -1)
+
+plt.imshow(img), plt.show()
+
+import cv2
+import numpy as np
+
+# Load the image
+image = cv2.imread("E:/computer_vision/test.png")
+img = cv2.imread("E:/computer_vision/test.png")
+
+# Create a mask to indicate the initial state (0 for background, 1 for foreground)
+mask = np.zeros(img.shape[:2], np.uint8)
+
+# Define the region of interest (ROI) where the foreground object is located
+rect = (50, 50, img.shape[1] - 100, img.shape[0] - 100)
+
+# Apply the GrabCut algorithm
+bgd_model = np.zeros((1, 65), np.float64)
+fgd_model = np.zeros((1, 65), np.float64)
+
+cv2.grabCut(img, mask, rect, bgd_model, fgd_model, 5, cv2.GC_INIT_WITH_RECT)
+
+# Modify the mask to separate the background (0 and 2) from the foreground (3 and 1)
+mask2 = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
+
+# Create a new image by multiplying the mask with the original image
+result = img * mask2[:, :, np.newaxis]
+
+# Display the result
+cv2.imshow('Foreground Removed', result)
+cv2.imshow("Input Image", image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+#feature matching
+import numpy as np
+import cv2
+
+
+# Read the query image as query_img
+# and train image This query image
+# is what you need to find in train image
+# Save it in the same directory
+# with the name image.jpg
+query_img = cv2.imread('E:/computer_vision/book.jpg')
+train_img = cv2.imread('E:/computer_vision/book.jpg')
+
+# Convert it to grayscale
+query_img_bw = cv2.cvtColor(query_img,cv2.COLOR_BGR2GRAY)
+train_img_bw = cv2.cvtColor(train_img, cv2.COLOR_BGR2GRAY)
+
+# Initialize the ORB detector algorithm
+orb = cv2.ORB_create()
+
+# Now detect the keypoints and compute
+# the descriptors for the query image
+# and train image
+queryKeypoints, queryDescriptors = orb.detectAndCompute(query_img_bw,None)
+trainKeypoints, trainDescriptors = orb.detectAndCompute(train_img_bw,None)
+
+# Initialize the Matcher for matching
+# the keypoints and then match the
+# keypoints
+matcher = cv2.BFMatcher()
+matches = matcher.match(queryDescriptors,trainDescriptors)
+
+# draw the matches to the final image
+# containing both the images the drawMatches()
+# function takes both images and keypoints
+# and outputs the matched query image with
+# its train image
+final_img = cv2.drawMatches(query_img, queryKeypoints,
+train_img, trainKeypoints, matches[:20],None)
+
+final_img = cv2.resize(final_img, (1000,650))
+
+# Show the final image
+cv2.imshow("Matches", final_img)
+cv2.waitKey(3000)
+
+
+import cv2
+import numpy as np
+
+# Load an image from file
+path = "E:/computer_vision/test3.png"
+image = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+
+# Apply Sobel edge detection
+sobel_x = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize=3)
+sobel_y = cv2.Sobel(image, cv2.CV_64F, 0, 1, ksize=3)
+
+# Calculate the gradient magnitude
+gradient_magnitude = np.sqrt(sobel_x**2 + sobel_y**2)
+
+# Normalize the gradient magnitude to the range [0, 255]
+normalized_gradient = cv2.normalize(gradient_magnitude, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
+
+# Display the original and edge-detected images
+cv2.imshow('Original Image', image)
+cv2.imshow('Sobel Edge Detection', normalized_gradient)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
+#texton video
+
+# Python program to write
+# text on video
+
+
+import cv2
+
+
+cap = cv2.VideoCapture('E:/computer_vision/test.mp4')
+
+while(True):
+	
+	# Capture frames in the video
+	ret, frame = cap.read()
+
+	# describe the type of font
+	# to be used.
+	font = cv2.FONT_HERSHEY_SIMPLEX
+
+	# Use putText() method for
+	# inserting text on video
+	cv2.putText(frame,
+				'Demo text on video-AK',
+				(50, 50),
+				font, 1,
+				(0, 255, 255),
+				2,
+				cv2.LINE_4)
+
+	# Display the resulting frame
+	cv2.imshow('video', frame)
+
+	# creating 'q' as the quit
+	# button for the video
+	if cv2.waitKey(1) & 0xFF == ord('q'):
+		break
+
+# release the cap object
+cap.release()
+# close all windows
+cv2.destroyAllWindows()
+
+
+#count face
+
+# Import required libraries
+import cv2
+import numpy as np
+import dlib
+
+
+# Connects to your computer's default camera
+cap = cv2.VideoCapture(0)
+
+
+# Detect the coordinates
+detector = dlib.get_frontal_face_detector()
+
+
+# Capture frames continuously
+while True:
+
+	# Capture frame-by-frame
+	ret, frame = cap.read()
+	frame = cv2.flip(frame, 1)
+
+	# RGB to grayscale
+	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+	faces = detector(gray)
+
+	# Iterator to count faces
+	i = 0
+	for face in faces:
+
+		# Get the coordinates of faces
+		x, y = face.left(), face.top()
+		x1, y1 = face.right(), face.bottom()
+		cv2.rectangle(frame, (x, y), (x1, y1), (0, 255, 0), 2)
+
+		# Increment iterator for each face in faces
+		i = i+1
+
+		# Display the box and faces
+		cv2.putText(frame, 'face num'+str(i), (x-10, y-10),
+					cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+		print(face, i)
+
+	# Display the resulting frame
+	cv2.imshow('frame', frame)
+
+	# This command let's us quit with the "q" button on a keyboard.
+	if cv2.waitKey(1) & 0xFF == ord('q'):
+		break
+
+
+# Release the capture and destroy the windows
+cap.release()
+cv2.destroyAllWindows()
+
+
+#transformation 
+import cv2
+import numpy as np
+path = "E:/computer_vision/test3.png"
+img = cv2.imread(path)
+rows,cols,_ = img.shape
+# define at three point on input image
+pts1 = np.float32([[50,50],[200,50],[50,200]])
+# define three points corresponding location to output image
+pts2 = np.float32([[10,100],[200,50],[100,250]]a)
+# get the affine transformation Matrix
+M = cv2.getAffineTransform(pts1,pts2)
+# apply affine transformation on the input image
+dst = cv2.warpAffine(img,M,(cols,rows))
+cv2.imshow("Affine Transform", dst)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
+#squar box 
+import numpy as np
+import cv2
+
+# Create a black canvas
+canvas_size = 300
+canvas = np.zeros((canvas_size, canvas_size, 3), dtype=np.uint8)
+
+# Calculate box sizes
+black_box_size = 400
+white_box_size = 150
+margin = (black_box_size - white_box_size) // 2
+
+# Calculate box positions
+black_box_position = (canvas_size - black_box_size) // 2
+white_box_position = black_box_position + margin
+
+# Draw white box on the canvas
+white_box = np.ones((white_box_size, white_box_size, 3), dtype=np.uint8) * 255
+canvas[white_box_position:white_box_position+white_box_size, white_box_position:white_box_position+white_box_size] = white_box
+
+# Draw black box around the white box
+cv2.rectangle(canvas, (black_box_position, black_box_position), (black_box_position + black_box_size, black_box_position + black_box_size), (0, 0, 0), 2)
+
+# Display the image
+cv2.imshow('Box Drawing', canvas)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
+#histogram equal 
+
+import cv2
+import matplotlib.pyplot as plt
+
+# Load the images
+img1 = cv2.imread("E:/computer_vision/face.jpg")
+img2 = cv2.imread("E:/computer_vision/test3.png")
+
+# Calculate the histograms, and normalize them
+hist_img1 = cv2.calcHist([img1], [0, 1, 2], None, [256, 256, 256], [0, 256, 0, 256, 0, 256])
+cv2.normalize(hist_img1, hist_img1, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX)
+hist_img2 = cv2.calcHist([img2], [0, 1, 2], None, [256, 256, 256], [0, 256, 0, 256, 0, 256])
+cv2.normalize(hist_img2, hist_img2, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX)
+
+# Find the metric value
+metric_val = cv2.compareHist(hist_img1, hist_img2, cv2.HISTCMP_CORREL)
+print("Metric Value:", metric_val)
+
+# plot the histograms of two images
+plt.subplot(121), plt.hist(img1.ravel(),256,[0,256]),
+plt.title('horizon.jpg')
+plt.subplot(122), plt.hist(img2.ravel(),256,[0,256]),
+plt.title('coins.jpg')
+plt.show()
+
+#draw shapes
+
+import numpy as np
+import cv2
+
+img = np.zeros((400,400,3),dtype = "uint8")
+
+cv2.circle(img,(100,100),50,(255,0,0),3)
+cv2.rectangle(img,(20,20),(300,200),(0,255,0),5)
+cv2.imshow("output",img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
+#different color on corner task3 
+
+import numpy as np
+import cv2
+import math
+def color(imgSize):
+    cornerSize = int(math.floor(imgSize/8))
+    img = np.ones((imgSize,imgSize,3));
+ # top left bluecorner
+    img[:cornerSize, :cornerSize] = (0,0,1); #(b,g,r)
+ # top right green corner
+    img[:cornerSize:, -cornerSize:] = (0,1,0);
+ # bottom left red corner
+    img[-cornerSize:, :cornerSize] = (1,0,0);
+ # bottom right black corner
+    img[-cornerSize:, -cornerSize:] = (0,0,0);
+    cv2.imshow('img',img)
+    cv2.waitKey(0)
+color(500);
+
+
+#remove background 
+import cv2
+import cvzone
+from cvzone.SelfiSegmentationModule import SelfiSegmentation
+
+segmentor = SelfiSegmentation()
+
+# read image
+image_path = "E:/computer_vision/test.png"
+imgOffice = cv2.imread(image_path)
+
+#resize office to 640x480
+imgOffice = cv2.resize(imgOffice, (640, 480))
+
+green = (0, 255, 0)
+
+imgNoBg = segmentor.removeBG(imgOffice, green, threshold=0.010)
+
+# show both images
+cv2.imshow('office',imgOffice)
+cv2.imwrite('BAckground_remover.jpg',imgNoBg)
+cv2.imshow("removed image",imgNoBg)
+
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
+#compare edge detection 
+
+import cv2
+import numpy as np
+from matplotlib import pyplot as plt
+from skimage.metrics import structural_similarity as ssim
+
+# Load an image from file
+path = "E:/computer_vision/test3.png"
+image = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+
+# Apply Canny edge detection
+canny = cv2.Canny(image, 100, 200)
+
+# Apply Sobel edge detection
+sobel_x = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize=3)
+sobel_y = cv2.Sobel(image, cv2.CV_64F, 0, 1, ksize=3)
+sobel_magnitude = np.sqrt(sobel_x**2 + sobel_y**2)
+sobel_normalized = cv2.normalize(sobel_magnitude, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
+
+# Define Prewitt edge detection kernels
+prewitt_x = np.array([[1, 0, -1], [1, 0, -1], [1, 0, -1]])
+prewitt_y = np.array([[1, 1, 1], [0, 0, 0], [-1, -1, -1]])
+
+# Apply Prewitt edge detection
+prewitt_x_result = cv2.filter2D(image, cv2.CV_64F, prewitt_x)
+prewitt_y_result = cv2.filter2D(image, cv2.CV_64F, prewitt_y)
+prewitt_magnitude = np.sqrt(prewitt_x_result**2 + prewitt_y_result**2)
+prewitt_normalized = cv2.normalize(prewitt_magnitude, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
+
+# Define Robert's edge detection kernels
+roberts_x = np.array([[1, 0], [0, -1]])
+roberts_y = np.array([[0, 1], [-1, 0]])
+
+# Apply Robert's edge detection
+roberts_x_result = cv2.filter2D(image, cv2.CV_64F, roberts_x)
+roberts_y_result = cv2.filter2D(image, cv2.CV_64F, roberts_y)
+roberts_magnitude = np.sqrt(roberts_x_result**2 + roberts_y_result**2)
+roberts_normalized = cv2.normalize(roberts_magnitude, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
+
+# Calculate Mean Squared Error (MSE)
+mse_sobel = np.mean((image - sobel_magnitude)**2)
+mse_canny = np.mean((image - canny)**2)
+mse_prewitt = np.mean((image - prewitt_magnitude)**2)
+mse_robert = np.mean((image - roberts_magnitude)**2)
+
+# Calculate Structural Similarity Index (SSI)
+ssi_sobel = ssim(image, sobel_magnitude)
+ssi_canny = ssim(image, canny)
+ssi_prewitt = ssim(image, prewitt_magnitude)
+ssi_robert = ssim(image, roberts_magnitude)
+
+print(f"MSE (Sobel): {mse_sobel:.2f}, MSE (Canny): {mse_canny:.2f},MSE (Robert): {mse_robert:.2f}, MSE (prewit): {mse_prewitt:.2f}")
+print(f"SSI (Sobel): {ssi_sobel:.2f}, SSI (Canny): {ssi_canny:.2f},SSI (Robert): {ssi_robert:.2f}, SSI (Prewitt): {ssi_prewitt:.2f}")
+
+# Display the original and edge-detected images
+plt.figure(figsize=(12, 8))
+
+plt.subplot(2, 3, 1), plt.imshow(image, cmap='gray')
+plt.title('Original Image'), plt.axis('off')
+
+plt.subplot(2, 3, 2), plt.imshow(canny, cmap='gray')
+plt.title('Canny Edge Detection'), plt.axis('off')
+
+plt.subplot(2, 3, 3), plt.imshow(sobel_normalized, cmap='gray')
+plt.title('Sobel Edge Detection'), plt.axis('off')
+
+plt.subplot(2, 3, 4), plt.imshow(prewitt_normalized, cmap='gray')
+plt.title('Prewitt Edge Detection'), plt.axis('off')
+
+plt.subplot(2, 3, 5), plt.imshow(roberts_normalized, cmap='gray')
+plt.title("Robert's Edge Detection"), plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+
+#corner detection 
+
+import numpy as np
+import cv2
+from matplotlib import pyplot as plt
+
+path = "E:/computer_vision/shapes.png"
+img = cv2.imread(path)
+
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+corners = cv2.goodFeaturesToTrack(gray, 27, 0.01, 10)
+corners = np.int0(corners)
+
+for i in corners:
+	x, y = i.ravel()
+	cv2.circle(img, (x, y), 3, 255, -1)
+
+plt.imshow(img), plt.show()
+
+#playavideo in reverse 
+
+import cv2
+cap = cv2.VideoCapture("E:/computer_vision/test.mp4")
+ret, vid = cap.read()
+count = 0
+ret = True
+frame_list = []
+while(ret == True):
+    ret, vid = cap.read()
+    frame_list.append(vid)
+    count += 1
+frame_list.pop()
+for frame in frame_list:
+    cv2.imshow("Frame", frame)
+    if cv2.waitKey(25) and 0xFF == ord("q"):
+        break
+cap.release()
+cv2.destroyAllWindows()
+frame_list.reverse()
+for frame in frame_list:
+    cv2.imshow("Frame", frame)
+    if cv2.waitKey(25) and 0xFF == ord("q"):
+        break
+cap.release()
+cv2.destroyAllWindows()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
